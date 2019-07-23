@@ -8,7 +8,8 @@ http://amzn.to/1LGWsLG
 """
 
 from __future__ import print_function
-
+score = [0,0]
+queue = []
 
 # --------------- Helpers that build all of the responses ----------------------
 
@@ -50,12 +51,10 @@ def get_welcome_response():
 
     session_attributes = {}
     card_title = "Welcome"
-    speech_output = "Welcome to the Alexa Snappa Skill. " \
-                    "Let's play some Snappa"
+    speech_output = "Welcome to the Alexa Snappa Skill. "
     # If the user either does not reply to the welcome message or says something
     # that is not understood, they will be prompted again with this text.
-    reprompt_text = "Please tell me your favorite color by saying, " \
-                    "my favorite color is red."
+    reprompt_text = "Let's play some Snappa!"
     should_end_session = False
     return build_response(session_attributes, build_speechlet_response(
         card_title, speech_output, reprompt_text, should_end_session))
@@ -103,11 +102,37 @@ def set_color_in_session(intent, session):
         card_title, speech_output, reprompt_text, should_end_session))
 
 
-def get_color_from_session(intent, session):
+def get_time(intent, session):
     session_attributes = {}
     reprompt_text = None
     
     speech_output = "It's Beer O Clock!"
+    should_end_session = False
+
+    # Setting reprompt_text to None signifies that we do not want to reprompt
+    # the user. If the user does not respond or says something that is not
+    # understood, the session will end.
+    return build_response(session_attributes, build_speechlet_response(
+        intent['name'], speech_output, reprompt_text, should_end_session))
+
+def get_score(intent, session):
+    session_attributes = {}
+    reprompt_text = None
+    speech_output = "The score is" + str(score[0]) + "to" + str(score[1]) + "bad guys" + "are winning"
+    should_end_session = False
+
+    # Setting reprompt_text to None signifies that we do not want to reprompt
+    # the user. If the user does not respond or says something that is not
+    # understood, the session will end.
+    return build_response(session_attributes, build_speechlet_response(
+        intent['name'], speech_output, reprompt_text, should_end_session))
+
+
+def score_good(intent,session):
+    session_attributes = {}
+    reprompt_text = None
+    score[0] +=1 
+    speech_output = "One point for the good guys, the score is now " + str(score[0]) + "to" + str(score[1])
     should_end_session = False
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
@@ -148,11 +173,21 @@ def on_intent(intent_request, session):
 
     # Dispatch to your skill's intent handlers
     if intent_name == "AddToQueue":
-        return set_color_in_session(intent, session)
+        return add_to_queue(intent, session)
+    elif intent_name == "ScoreGood":
+        return  score_good(intent, session)
+        
     elif intent_name == "GetScore":
-        return get_color_from_session(intent, session)
+        return  get_score(intent, session)
+
+    
+
+    elif intent_name == "ScoreBad":
+        return  update_bad(intent, session)
+
     elif intent_name == "BeerOClock":
-        return get_color_from_session(intent, session)
+        return get_time(intent, session)
+
     elif intent_name == "AMAZON.HelpIntent":
         return get_welcome_response()
     elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":

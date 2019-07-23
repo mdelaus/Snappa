@@ -1,0 +1,73 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "snappa appa",
+            "intents": [
+                {
+                    "name": "GetScore",
+                    "slots": [],
+                    "samples": [
+                        "the game score",
+                        "the current score",
+                        "what's the score",
+                        "the snappa score",
+                        "who's winning the game"
+                    ]
+                },
+                {
+                    "name": "AddToQueue",
+                    "slots": [
+                        {
+                            "name": "TeamToAdd",
+                            "type": "AMAZON.US_FIRST_NAME"
+                        }
+                    ],
+                    "samples": [
+                        "add {TeamToAdd} to the queue",
+                        "put {TeamToAdd} on the queue"
+                    ]
+                },
+                {
+                    "name": "BeerOClock",
+                    "slots": [],
+                    "samples": [
+                        "what time is it",
+                        "what's the time"
+                    ]
+                },
+                {
+                    "name": "GetQueue",
+                    "slots": [],
+                    "samples": [
+                        "what's the queue",
+                        "who's up next",
+                        "who's in line",
+                        "how many people are in the queue"
+                    ]
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "ScoreGood",
+                    "slots": [],
+                    "samples": [
+                        "the bad guys scored",
+                        "give a point to the good guys"
+                    ]
+                },
+                {
+                    "name": "ScoreBad",
+                    "slots": [],
+                    "samples": [
+                        "point for bad guys",
+                        "the bad guys scored",
+                        "give a point to the bad guys"
+                    ]
+                }
+            ],
+            "types": []
+        }
+    }
+}
