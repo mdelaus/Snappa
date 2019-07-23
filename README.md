@@ -1,0 +1,2 @@
+# Snappa
+Alexa Snappa Skill
