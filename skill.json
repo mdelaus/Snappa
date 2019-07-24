@@ -1,12 +1,17 @@
 {
     "interactionModel": {
         "languageModel": {
-            "invocationName": "snappa appa",
+            "invocationName": "snappa",
             "intents": [
                 {
                     "name": "GetScore",
                     "slots": [],
                     "samples": [
+                        "whats the score",
+                        "what the score is",
+                        "whos winning",
+                        "give me the score",
+                        "whats the current score",
                         "the game score",
                         "the current score",
                         "what's the score",
@@ -31,6 +36,7 @@
                     "name": "BeerOClock",
                     "slots": [],
                     "samples": [
+                        "what time it is",
                         "what time is it",
                         "what's the time"
                     ]
@@ -39,8 +45,10 @@
                     "name": "GetQueue",
                     "slots": [],
                     "samples": [
+                        "whats the queue looking like",
+                        "how long is the queue",
+                        "who's in the queue",
                         "what's the queue",
-                        "who's up next",
                         "who's in line",
                         "how many people are in the queue"
                     ]
@@ -53,7 +61,10 @@
                     "name": "ScoreGood",
                     "slots": [],
                     "samples": [
-                        "the bad guys scored",
+                        "the good guys got a point",
+                        "good guys scored",
+                        "point for the good guys",
+                        "the good guys scored",
                         "give a point to the good guys"
                     ]
                 },
@@ -61,9 +72,53 @@
                     "name": "ScoreBad",
                     "slots": [],
                     "samples": [
+                        "give the bad boys a point",
+                        "the bad boys scored",
+                        "the bad buys got a point",
+                        "bad guys guys scored",
                         "point for bad guys",
                         "the bad guys scored",
                         "give a point to the bad guys"
+                    ]
+                },
+                {
+                    "name": "NewGame",
+                    "slots": [],
+                    "samples": [
+                        "restart a game",
+                        "start a new game"
+                    ]
+                },
+                {
+                    "name": "PopQueue",
+                    "slots": [],
+                    "samples": [
+                        "update the line",
+                        "update the queue",
+                        "the next team is up"
+                    ]
+                },
+                {
+                    "name": "ClearQueue",
+                    "slots": [],
+                    "samples": [
+                        "restart the queue",
+                        "reset the queue",
+                        "clear the queue"
+                    ]
+                },
+                {
+                    "name": "RemoveQueue",
+                    "slots": [
+                        {
+                            "name": "NameToRemove",
+                            "type": "AMAZON.US_FIRST_NAME"
+                        }
+                    ],
+                    "samples": [
+                        "Delete {NameToRemove} from the queue",
+                        "Remove {NameToRemove} from the queue",
+                        "Take {NameToRemove} off the queue"
                     ]
                 }
             ],

@@ -118,7 +118,16 @@ def get_time(intent, session):
 def get_score(intent, session):
     session_attributes = {}
     reprompt_text = None
-    speech_output = "The score is" + str(score[0]) + "to" + str(score[1]) + "bad guys" + "are winning"
+    speech_output = ""
+    
+    
+    if score[0] == score[1]:
+        speech_output = "The game is tied" + str(score[0]) + "to" + str(score[1])
+    elif score[0] > score[1]:
+        speech_output = "The good guys are winning" + str(score[0]) + "to" + str(score[1])
+    else:
+        speech_output = "The bad guys are winning" + str(score[1]) + "to" + str(score[0])
+
     should_end_session = False
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
@@ -131,7 +140,8 @@ def get_score(intent, session):
 def score_good(intent,session):
     session_attributes = {}
     reprompt_text = None
-    score[0] +=1 
+    score[0] +=1
+
     speech_output = "One point for the good guys, the score is now " + str(score[0]) + "to" + str(score[1])
     should_end_session = False
 
@@ -141,7 +151,119 @@ def score_good(intent,session):
     return build_response(session_attributes, build_speechlet_response(
         intent['name'], speech_output, reprompt_text, should_end_session))
 
+def score_bad(intent,session):
+    session_attributes = {}
+    reprompt_text = None
+    score[1] += 1
+        
+    speech_output = "One point for the bad guys, the score is now " + str(score[0]) + "to" + str(score[1])
+    should_end_session = False
 
+    # Setting reprompt_text to None signifies that we do not want to reprompt
+    # the user. If the user does not respond or says something that is not
+    # understood, the session will end.
+    return build_response(session_attributes, build_speechlet_response(
+        intent['name'], speech_output, reprompt_text, should_end_session))
+
+def new_game(intent, session):
+    session_attributes = {}
+    reprompt_text = None
+    score[0] = 0
+    score[1] = 0
+    winning = None
+        
+    speech_output = "New game started, let's play some snappa"
+    should_end_session = False
+
+    # Setting reprompt_text to None signifies that we do not want to reprompt
+    # the user. If the user does not respond or says something that is not
+    # understood, the session will end.
+    return build_response(session_attributes, build_speechlet_response(
+        intent['name'], speech_output, reprompt_text, should_end_session))
+
+
+def add_to_queue(intent,session):
+    session_attributes = {}
+    reprompt_text = None
+    name = intent['slots']['TeamToAdd']['value']
+    queue.append(name)
+    speech_output = "Added " + name + " to the queue, you are number" + str(len(queue)) + " in the queue"
+    should_end_session = False
+
+    # Setting reprompt_text to None signifies that we do not want to reprompt
+    # the user. If the user does not respond or says something that is not
+    # understood, the session will end.
+    return build_response(session_attributes, build_speechlet_response(
+        intent['name'], speech_output, reprompt_text, should_end_session))
+        
+
+def get_queue(intent,session):
+    session_attributes = {}
+    reprompt_text = None
+    queue_length = str(len(queue))
+    if len(queue) == 0:
+         speech_output = "The queue is currently empty"
+    else:
+        if len(queue) == 1:
+            speech_output = "The only team on the queue is " + queue[0]
+        else:
+            speech_output = "The queue is currently " + queue_length + " teams long. The order is "
+            for i in range(len(queue)):
+                if i < len(queue) - 1:
+                    speech_output += queue[i]
+                    speech_output += " and then"
+                else:
+                    speech_output += queue[i]  
+    should_end_session = False
+
+    # Setting reprompt_text to None signifies that we do not want to reprompt
+    # the user. If the user does not respond or says something that is not
+    # understood, the session will end.
+    return build_response(session_attributes, build_speechlet_response(
+        intent['name'], speech_output, reprompt_text, should_end_session))
+        
+        
+def pop_queue(intent,session):
+    session_attributes = {}
+    reprompt_text = None
+    
+    next = queue[0]
+    queue.pop(0)
+    speech_output = "ok " + next + " is now playing"
+    
+    should_end_session = False
+    return build_response(session_attributes, build_speechlet_response(
+        intent['name'], speech_output, reprompt_text, should_end_session))
+        
+def clear_queue(intent,session):
+    session_attributes = {}
+    reprompt_text = None
+    
+    for i in range(len(queue)):
+        queue.pop(0)
+        
+    speech_output = "ok, the queue is now empty"
+    
+    should_end_session = False
+    return build_response(session_attributes, build_speechlet_response(
+        intent['name'], speech_output, reprompt_text, should_end_session))
+        
+def remove_queue(intent,session):
+    session_attributes = {}
+    reprompt_text = None
+    
+    name = intent['slots']['NameToRemove']['value']
+    for i in range(len(queue)):
+        if queue[i] == name:
+            queue.pop(i)
+            break
+    
+    speech_output = "ok, " + name + " is off the queue"
+    
+    should_end_session = False
+    return build_response(session_attributes, build_speechlet_response(
+        intent['name'], speech_output, reprompt_text, should_end_session))
+        
 # --------------- Events ------------------
 
 def on_session_started(session_started_request, session):
@@ -149,6 +271,8 @@ def on_session_started(session_started_request, session):
 
     print("on_session_started requestId=" + session_started_request['requestId']
           + ", sessionId=" + session['sessionId'])
+
+    return get_welcome_response()
 
 
 def on_launch(launch_request, session):
@@ -175,16 +299,29 @@ def on_intent(intent_request, session):
     if intent_name == "AddToQueue":
         return add_to_queue(intent, session)
     elif intent_name == "ScoreGood":
-        return  score_good(intent, session)
+        return score_good(intent, session)
         
     elif intent_name == "GetScore":
-        return  get_score(intent, session)
+        return get_score(intent, session)
 
-    
+    if intent_name == "GetQueue":
+        return get_queue(intent, session)
 
     elif intent_name == "ScoreBad":
-        return  update_bad(intent, session)
-
+        return score_bad(intent, session)
+    
+    elif intent_name == "RemoveQueue":
+        return remove_queue(intent, session)
+    
+    elif intent_name == "NewGame":
+        return new_game(intent, session)
+    
+    elif intent_name == "PopQueue":
+        return pop_queue(intent, session)
+    
+    elif intent_name == "ClearQueue":
+        return clear_queue(intent, session)
+            
     elif intent_name == "BeerOClock":
         return get_time(intent, session)
 
